@@ -290,10 +290,11 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     trials = data.get("clinical_trials", [])
     status_counts = Counter(t["status"] for t in trials)
     status_str = ", ".join(f"{k}: {v}" for k, v in status_counts.items()) or "None"
+    btm_hdr = f"CLINICALTRIALS.GOV PMCF & COMPETITOR TRIALS (n = {len(trials)} | {status_str}):"
     ax.text(
         0.50, 2.66,
-        f"CLINICALTRIALS.GOV PMCF & COMPETITOR TRIALS (n = {len(trials)} tracked | {status_str}):",
-        ha="left", va="top", fontsize=9.2, fontweight="bold", color="#166534", zorder=3
+        textwrap.shorten(btm_hdr, width=102, placeholder="...):"),
+        ha="left", va="top", fontsize=8.8, fontweight="bold", color="#166534", zorder=3
     )
 
     ty = 2.30
