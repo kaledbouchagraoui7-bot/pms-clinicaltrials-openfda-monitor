@@ -1,0 +1,3 @@
+Notification recorded at 2026-11-09T20:38:00+01:00:
+ClinicalTrials.gov API v2 data is subject to the terms and conditions at https://clinicaltrials.gov/about-site/terms-conditions.
+OpenFDA API data is public domain under Creative Commons CC0 1.0 Universal and subject to API terms at https://open.fda.gov/apis/ and https://open.fda.gov/license.

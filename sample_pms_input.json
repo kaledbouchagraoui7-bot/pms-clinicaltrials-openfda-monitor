@@ -1,0 +1,108 @@
+{
+  "project_slug": "cgm_aid_class_iib_pms_sample",
+  "device_category": "Automated Insulin Delivery (AID) & Continuous Glucose Monitoring (CGM) Systems",
+  "eu_mdr_class": "Class IIb / Class III Active Therapeutic & Diagnostic Device (EU MDR 2017/745 Rule 11 / Rule 12)",
+  "search_window": "2024-01-01 to 2026-02-28 (Fictional Demonstration Dataset for QA Review)",
+  "is_fictional_sample": true,
+  "maude_summary": {
+    "total_events_analyzed": 420,
+    "event_type_counts": {
+      "Malfunction": 312,
+      "Injury": 104,
+      "Death": 4
+    },
+    "top_device_problems": [
+      {"problem": "Sensor Signal Loss / Bluetooth Telemetry Dropout", "count": 118, "pct": 28.1},
+      {"problem": "Inaccurate Glucose Reading (Hyper/Hypoglycemia Discrepancy)", "count": 89, "pct": 21.2},
+      {"problem": "Infusion Set Occlusion / Cannula Kinking", "count": 64, "pct": 15.2},
+      {"problem": "Adhesive Skin Irritation / Contact Dermatitis", "count": 51, "pct": 12.1},
+      {"problem": "Battery Premature Depletion / Charging Fault", "count": 38, "pct": 9.0},
+      {"problem": "Pump Alarm / Audio Alert Failure", "count": 29, "pct": 6.9}
+    ]
+  },
+  "recalls_and_510k": [
+    {
+      "record_type": "FDA Recall (Class I)",
+      "reference_id": "Z-1042-2025 (SAMPLE)",
+      "manufacturer": "Sample MedTech Pump Corp",
+      "product_code": "OYC",
+      "date": "2025-06-14",
+      "status_or_decision": "Ongoing Field Software Update",
+      "summary": "[SAMPLE] Mobile app version 2.4 battery drain resulting in premature pump shutdown without 30-minute low-battery alert."
+    },
+    {
+      "record_type": "FDA Recall (Class II)",
+      "reference_id": "Z-1889-2025 (SAMPLE)",
+      "manufacturer": "Sample Biosensor AG",
+      "product_code": "QBJ",
+      "date": "2025-09-22",
+      "status_or_decision": "Lot-Specific Advisory Notice",
+      "summary": "[SAMPLE] Moisture ingress in transmitter housing on specific lot numbers causing intermittent Bluetooth pairing loss."
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K243109 (SAMPLE)",
+      "manufacturer": "Alpine Loop Medical SA",
+      "product_code": "QBJ",
+      "date": "2025-11-08",
+      "status_or_decision": "Substantially Equivalent (SE)",
+      "summary": "[SAMPLE] 14-day factory-calibrated interoperable Continuous Glucose Monitoring (iCGM) sensor for ages 2+."
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K250412 (SAMPLE)",
+      "manufacturer": "Nordic GlycoControl GmbH",
+      "product_code": "OYC",
+      "date": "2026-01-19",
+      "status_or_decision": "Substantially Equivalent (SE)",
+      "summary": "[SAMPLE] Predictive low-glucose suspend and hybrid closed-loop dosing algorithm controller (SaMD)."
+    }
+  ],
+  "clinical_trials": [
+    {
+      "nct_id": "NCT05810001",
+      "title": "[SAMPLE] Multicenter RCT of Hybrid Closed-Loop Insulin Delivery in Type 1 Diabetes Adults",
+      "status": "RECRUITING",
+      "phase": "PHASE4",
+      "sponsor": "European Diabetes Technology Consortium",
+      "enrollment": 240,
+      "primary_outcome": "Time in Range (70-180 mg/dL) at 26 Weeks (+14.2% vs Sensor-Augmented Pump)"
+    },
+    {
+      "nct_id": "NCT05920002",
+      "title": "[SAMPLE] Post-Market Registry of 14-Day Interoperable CGM Accuracy During High-Intensity Exercise",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "University Hospital Zurich (Sample)",
+      "enrollment": 120,
+      "primary_outcome": "Overall MARD 8.4% across euglycemic and hypoglycemic zones; zero device-related SAEs"
+    },
+    {
+      "nct_id": "NCT06030003",
+      "title": "[SAMPLE] Pediatric Safety and Glycemic Control of Automated Bolus Correction in Ages 6-17",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "phase": "PHASE3",
+      "sponsor": "Lyon Clinical Research Institute (Sample)",
+      "enrollment": 165,
+      "primary_outcome": "Reduction in nocturnal time <54 mg/dL from 2.8% to 0.6% (p < 0.001)"
+    },
+    {
+      "nct_id": "NCT06140004",
+      "title": "[SAMPLE] Real-World PMCF Study of Patch-Pump Occlusion Alarm Algorithms in Type 2 Insulin Users",
+      "status": "RECRUITING",
+      "phase": "NA",
+      "sponsor": "MedTech PMCF Alliance GmbH",
+      "enrollment": 350,
+      "primary_outcome": "False-alarm rate <0.12 per patient-week; 99.1% occlusion detection sensitivity"
+    },
+    {
+      "nct_id": "NCT06250005",
+      "title": "[SAMPLE] Skin Tolerability and 15-Day Wear Survival of Hypoallergenic Hydrocolloid CGM Patch",
+      "status": "COMPLETED",
+      "phase": "PHASE4",
+      "sponsor": "Geneva DermaDevice SA",
+      "enrollment": 95,
+      "primary_outcome": "94.7% full 15-day sensor survival; Grade >=2 erythema reduced by 68%"
+    }
+  ]
+}
