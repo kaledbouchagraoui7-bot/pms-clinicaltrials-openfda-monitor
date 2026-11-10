@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/sentinel_logo_full.png" alt="Sentinel — ClinicalTrials.gov & OpenFDA PMS Monitor" width="760" />
+</div>
+
 # Automated ClinicalTrials.gov + OpenFDA MAUDE Post-Market Surveillance (PMS) Monitor
 
 **Automated EU MDR 2017/745 Article 83–86 (PMS / PSUR), MDCG 2022-21, and FDA 21 CFR Part 803 Competitive Safety & Clinical Trial Landscape Surveillance Engine.**
