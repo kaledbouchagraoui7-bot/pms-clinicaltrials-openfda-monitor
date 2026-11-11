@@ -9,6 +9,9 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Regulatory Scope](https://img.shields.io/badge/Scope-EU_MDR_PSUR_%7C_OpenFDA_MAUDE_%7C_ClinicalTrials.gov-0D9488.svg)](#overview)
+[![Storefront](https://img.shields.io/badge/Service_Catalog-Storefront_%26_Legal_(EN%2FFR)-0F172A.svg)](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)
+
+> **Turnkey PSUR Surveillance Storefront:** Inspect sample deliverables, ALCOA+ provenance standards, and complimentary 1-page device/PMCF snapshots at **[kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)**.
 
 ---
 

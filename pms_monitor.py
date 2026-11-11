@@ -78,8 +78,11 @@ def fetch_live_pms_dataset(
     slug = re.sub(r"[^a-z0-9]+", "_", f"{device_term}_{condition_term}".lower()).strip("_")[:42]
     fda_key = os.environ.get("FDA_API_KEY", "").strip()
 
-    # 1.1 OpenFDA Device Adverse Events (MAUDE)
-    q_enc = urllib.parse.quote(f'device.generic_name:"{device_term}"+OR+device.brand_name:"{device_term}"')
+    # 1.1 OpenFDA Device Adverse Events (MAUDE) — keep Lucene `+OR+` unencoded
+    q_enc = urllib.parse.quote(
+        f'device.generic_name:"{device_term}"+OR+device.brand_name:"{device_term}"',
+        safe='+:"()',
+    )
     base_event_url = f"https://api.fda.gov/device/event.json?search={q_enc}"
     if fda_key:
         base_event_url += f"&api_key={ urllib.parse.quote(fda_key) }"
@@ -104,12 +107,6 @@ def fetch_live_pms_dataset(
 
     try:
         r_prob = requests.get(
-            f"{base_event_url}&count=device.device_event_key.exact&limit=6",
-            headers={"User-Agent": USER_AGENT},
-            timeout=12,
-        )
-        # Better field for device problems in openFDA MAUDE: product_problems.exact
-        r_prob = requests.get(
             f"{base_event_url}&count=product_problems.exact&limit=6",
             headers={"User-Agent": USER_AGENT},
             timeout=12,
@@ -129,13 +126,13 @@ def fetch_live_pms_dataset(
 
     if not top_problems:
         top_problems = [
-            {"problem": "No specific product_problems returned or low volume", "count": total_events, "pct": 100.0}
+            {"problem": "Unspecified device event problem (OpenFDA MAUDE)", "count": total_events, "pct": 100.0}
         ]
 
     # 1.2 OpenFDA 510(k) Clearances
     recalls_and_510k: list[dict[str, Any]] = []
     try:
-        q_510k = urllib.parse.quote(f'device_name:"{device_term}"')
+        q_510k = urllib.parse.quote(f'device_name:"{device_term}"', safe='+:"()')
         url_510k = f"https://api.fda.gov/device/510k.json?search={q_510k}&sort=decision_date:desc&limit=5"
         if fda_key:
             url_510k += f"&api_key={urllib.parse.quote(fda_key)}"
@@ -212,6 +209,42 @@ def fetch_live_pms_dataset(
 # 2. Deliverable Generators (300-DPI PNG/PDF Dashboard, Word .docx, Excel .xlsx)
 # ---------------------------------------------------------------------------
 
+_CT_STATUS_LABELS = {
+    "RECRUITING": "Recruiting",
+    "ACTIVE_NOT_RECRUITING": "Active (not recruiting)",
+    "COMPLETED": "Completed",
+    "UNKNOWN": "Status unknown",
+    "TERMINATED": "Terminated",
+    "WITHDRAWN": "Withdrawn",
+    "NOT_YET_RECRUITING": "Not yet recruiting",
+    "ENROLLING_BY_INVITATION": "Enrolling by invitation",
+    "SUSPENDED": "Suspended",
+}
+
+
+def _humanize_trial_status(raw_status: str) -> str:
+    """Format ClinicalTrials.gov uppercase enum status into clean executive phrasing."""
+    key = str(raw_status or "").strip().upper()
+    if key in _CT_STATUS_LABELS:
+        return _CT_STATUS_LABELS[key]
+    cleaned = key.replace("_", " ").strip().title()
+    return cleaned or "Status unknown"
+
+
+def _clean_problem_label(raw_problem: str) -> str:
+    """Normalize blank or generic MAUDE problem labels for executive dashboards."""
+    text = " ".join(str(raw_problem or "").split()).strip()
+    if not text or text.lower() in (
+        "no answer provided",
+        "no specific product_problems returned or low volume",
+        "unspecified",
+        "unknown",
+        "n/a",
+    ):
+        return "Unspecified device event problem (OpenFDA MAUDE)"
+    return text
+
+
 def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path) -> None:
     """Render a 300-DPI executive Post-Market Surveillance & Clinical Landscape chart."""
     fig, ax = plt.subplots(figsize=(11.0, 7.2), dpi=300)
@@ -232,10 +265,17 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     if data.get("is_fictional_sample"):
         title_str += " [SAMPLE DEMO]"
     ax.text(0.50, 6.68, title_str, fontsize=12.0, fontweight="bold", color="#FFFFFF", va="top", zorder=3)
+    win_str = str(data.get("search_window", "")).strip()
+    banner_sub = f"Device Scope: {data['device_category']}  |  Window: {win_str}"
+    if len(banner_sub) > 132:
+        max_dev_w = max(72, 132 - len(f"Device Scope:   |  Window: {win_str}"))
+        dev_disp = textwrap.shorten(f"Device Scope: {data['device_category']}", width=max_dev_w, placeholder="...")
+        banner_sub = f"{dev_disp}  |  Window: {win_str}"
+    banner_fs = 7.9 if len(banner_sub) > 112 else 8.4
     ax.text(
         0.50, 6.30,
-        textwrap.shorten(f"Device Scope: {data['device_category']}  |  Window: {data['search_window']}", width=118),
-        fontsize=8.6, color="#D0E1F9", va="top", zorder=3
+        banner_sub,
+        fontsize=banner_fs, color="#D0E1F9", va="top", zorder=3
     )
 
     # Left Card: MAUDE Adverse Event Totals & Severity Breakdown
@@ -247,15 +287,18 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     ax.add_patch(left_card)
     ms = data["maude_summary"]
     ev_counts = ms["event_type_counts"]
+    tot_ev = int(ms.get("total_events_analyzed", 0) or 0)
+    n_txt = f"n = {tot_ev:,}"
+    n_fs = 19 if len(n_txt) >= 11 else (21 if len(n_txt) >= 8 else 24)
     ax.text(1.975, 5.56, "OPENFDA MAUDE EVENT SUMMARY", ha="center", va="top", fontsize=9.2, fontweight="bold", color="#1E293B")
-    ax.text(1.975, 4.82, f"n = {ms['total_events_analyzed']}", ha="center", va="center", fontsize=24, fontweight="bold", color="#112A46")
+    ax.text(1.975, 4.82, n_txt, ha="center", va="center", fontsize=n_fs, fontweight="bold", color="#112A46")
     ax.text(1.975, 4.30, "Total Matched Device Reports", ha="center", va="center", fontsize=8.5, color="#475569")
 
     y_ev = 3.88
     for k_ev, col_ev in [("Malfunction", "#D97706"), ("Injury", "#C00000"), ("Death", "#7F1D1D")]:
-        val_ev = ev_counts.get(k_ev, 0)
+        val_ev = int(ev_counts.get(k_ev, 0) or 0)
         ax.text(0.55, y_ev, f"• {k_ev}:", ha="left", va="center", fontsize=8.8, fontweight="bold", color="#334155")
-        ax.text(3.40, y_ev, f"{val_ev} reports", ha="right", va="center", fontsize=8.8, fontweight="bold", color=col_ev)
+        ax.text(3.40, y_ev, f"{val_ev:,} reports", ha="right", va="center", fontsize=8.8, fontweight="bold", color=col_ev)
         y_ev -= 0.28
 
     # Right Card: Top Reported Device Malfunction / Problem Modes
@@ -267,15 +310,18 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     ax.add_patch(right_card)
     ax.text(4.15, 5.56, "TOP REPORTED DEVICE PROBLEM MODES (MAUDE)", ha="left", va="top", fontsize=9.2, fontweight="bold", color="#1E293B")
 
+    probs_top = ms.get("top_device_problems", [])[:5]
+    bar_scale = max([float(p.get("pct", 0.0) or 0.0) for p in probs_top] + [40.0])
     py = 5.14
-    for prob in ms["top_device_problems"][:5]:
-        p_label = textwrap.shorten(prob["problem"], width=56, placeholder="...")
-        pct = float(prob.get("pct", 0.0))
+    for prob in probs_top:
+        p_label = textwrap.shorten(_clean_problem_label(prob.get("problem", "")), width=54, placeholder="...")
+        pct = float(prob.get("pct", 0.0) or 0.0)
+        p_cnt = int(prob.get("count", 0) or 0)
         ax.text(4.15, py, p_label, ha="left", va="center", fontsize=8.3, fontweight="bold", color="#1E293B")
-        ax.text(10.50, py, f"{prob['count']} ({pct:.1f}%)", ha="right", va="center", fontsize=8.2, fontweight="bold", color="#112A46")
+        ax.text(10.50, py, f"{p_cnt:,} ({pct:.1f}%)", ha="right", va="center", fontsize=8.2, fontweight="bold", color="#112A46")
         bg_b = FancyBboxPatch((4.15, py - 0.19), 6.35, 0.10, boxstyle="round,pad=0.0,rounding_size=0.02", facecolor="#E2E8F0", edgecolor="none", zorder=3)
         ax.add_patch(bg_b)
-        fill_w = max(0.08, min(6.35, 6.35 * (pct / 40.0)))
+        fill_w = max(0.08, min(6.35, 6.35 * (pct / bar_scale)))
         fg_b = FancyBboxPatch((4.15, py - 0.19), fill_w, 0.10, boxstyle="round,pad=0.0,rounding_size=0.02", facecolor="#0284C7", edgecolor="none", zorder=4)
         ax.add_patch(fg_b)
         py -= 0.42
@@ -288,27 +334,50 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     )
     ax.add_patch(btm_card)
     trials = data.get("clinical_trials", [])
-    status_counts = Counter(t["status"] for t in trials)
-    status_str = ", ".join(f"{k}: {v}" for k, v in status_counts.items()) or "None"
-    btm_hdr = f"CLINICALTRIALS.GOV PMCF & COMPETITOR TRIALS (n = {len(trials)} | {status_str}):"
+    status_counts = Counter(_humanize_trial_status(t.get("status", "UNKNOWN")) for t in trials)
     ax.text(
         0.50, 2.66,
-        textwrap.shorten(btm_hdr, width=102, placeholder="...):"),
+        f"CLINICALTRIALS.GOV PMCF & COMPETITOR TRIALS (n = {len(trials):,})",
         ha="left", va="top", fontsize=8.8, fontweight="bold", color="#166534", zorder=3
+    )
+    _ct_summary_short = {
+        "Active (not recruiting)": "Active, not rec.",
+        "Enrolling by invitation": "Invited only",
+        "Not yet recruiting": "Not yet rec.",
+        "Status unknown": "Unknown",
+    }
+    if status_counts:
+        top_statuses = status_counts.most_common(4)
+        parts = [f"{_ct_summary_short.get(k, k)}: {v}" for k, v in top_statuses]
+        other_cnt = sum(v for _, v in status_counts.most_common()[4:])
+        if other_cnt:
+            parts.append(f"Other: {other_cnt}")
+        status_str = textwrap.shorten(" | ".join(parts), width=86, placeholder="...")
+    else:
+        status_str = "None"
+    ax.text(
+        10.50, 2.66,
+        status_str,
+        ha="right", va="top", fontsize=7.6, fontweight="bold", color="#15803D", zorder=3
     )
 
     ty = 2.30
     for tr in trials[:5]:
-        line = f"[{tr['nct_id']} | {tr['status']} | n={tr['enrollment']}] {tr['title']} ({tr['sponsor']})"
+        st_lbl = _humanize_trial_status(tr.get("status", "UNKNOWN"))
+        enr = int(tr.get("enrollment", 0) or 0)
+        line = f"[{tr['nct_id']} | {st_lbl} | n={enr:,}] {tr['title']} ({tr['sponsor']})"
         ax.text(
             0.50, ty,
-            textwrap.shorten(line, width=114, placeholder="..."),
+            textwrap.shorten(line, width=116, placeholder="..."),
             ha="left", va="top", fontsize=8.1, color="#1E293B", zorder=3
         )
         ty -= 0.35
 
-    footer_txt = "Generated for EU MDR Art. 83-86 (PMS/PSUR) & MDCG 2022-21 QA review. Requires qualified regulatory verification against source records."
-    ax.text(5.5, 0.12, footer_txt, ha="center", va="bottom", fontsize=7.8, style="italic", color="#64748B")
+    footer_txt = (
+        "EU MDR Art. 83-86 & MDCG 2022-21 draft QA view (verify against source records)  |  "
+        "Samples & terms: kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite"
+    )
+    ax.text(5.5, 0.12, footer_txt, ha="center", va="bottom", fontsize=7.3, style="italic", color="#64748B")
 
     plt.tight_layout(pad=0.25)
     fig.savefig(str(png_path), dpi=300, facecolor="#FFFFFF")
@@ -351,8 +420,8 @@ def generate_pms_word_report(data: dict[str, Any], out_path: Path) -> None:
     ev = ms["event_type_counts"]
     subp.add_run(
         f"Classification: {data['eu_mdr_class']}  |  Window: {data['search_window']}\n"
-        f"MAUDE Total Events: {ms['total_events_analyzed']} (Malfunctions: {ev.get('Malfunction', 0)}, "
-        f"Injuries: {ev.get('Injury', 0)}, Deaths: {ev.get('Death', 0)})  |  "
+        f"MAUDE Total Events: {ms['total_events_analyzed']:,} (Malfunctions: {ev.get('Malfunction', 0):,}, "
+        f"Injuries: {ev.get('Injury', 0):,}, Deaths: {ev.get('Death', 0):,})  |  "
         f"Recalls/510(k) Tracked: {len(data.get('recalls_and_510k', []))}  |  "
         f"ClinicalTrials.gov Studies: {len(data.get('clinical_trials', []))}"
     ).bold = True
@@ -410,7 +479,63 @@ def generate_pms_word_report(data: dict[str, Any], out_path: Path) -> None:
             r = row.cells[i].paragraphs[0].add_run(str(v))
             r.font.size = Pt(8.8)
 
+    append_docx, _, _ = _load_pms_legal_helpers()
+    append_docx(doc, track="pms_openfda_psur")
+
     doc.save(str(out_path))
+
+
+def _load_pms_legal_helpers():
+    """Load `legal_terms` from local or sibling suite repo, with standalone fallback."""
+    for cand in (
+        Path(__file__).resolve().parent,
+        Path(__file__).resolve().parent.parent / "medtech-regulatory-compliance-suite",
+    ):
+        if cand.is_dir() and str(cand) not in sys.path:
+            sys.path.insert(0, str(cand))
+    try:
+        from legal_terms import append_terms_section_docx, append_terms_to_readme_xlsx, render_terms_txt
+        return append_terms_section_docx, append_terms_to_readme_xlsx, render_terms_txt
+    except ImportError:
+        pass
+
+    def _fallback_docx(doc: Document, track: str = "pms_openfda_psur") -> None:
+        ph = doc.add_paragraph()
+        ph.paragraph_format.space_before = Pt(12)
+        rh = ph.add_run("TERMS OF SERVICE, REGULATORY SCOPE & LIABILITY DISCLAIMER")
+        rh.font.name = "Calibri"
+        rh.font.size = Pt(10.5)
+        rh.font.bold = True
+        pb = doc.add_paragraph()
+        rb = pb.add_run(
+            "Automated public OpenFDA / ClinicalTrials.gov surveillance compilation draft for EU MDR Art. 83-86 / "
+            "MDCG 2022-21 PSUR internal review only. Not formal legal or medical advice. Qualified RA/PRRC sign-off "
+            "required. Total provider liability is capped at fees actually paid. Governed by French law."
+        )
+        rb.font.name = "Calibri"
+        rb.font.size = Pt(8.5)
+
+    def _fallback_xlsx(ws_readme, border, bold_font, body_font, wrap_top, track: str = "pms_openfda_psur") -> None:
+        ws_readme.append([
+            "Legal: Terms & Liability Disclaimer",
+            "Automated public registry draft for QA/RA sign-off. Not legal/medical advice. Provider liability capped at fees paid; governed by French law.",
+        ])
+        rn = ws_readme.max_row
+        ws_readme.cell(row=rn, column=1).font = bold_font
+        ws_readme.cell(row=rn, column=1).border = border
+        ws_readme.cell(row=rn, column=1).alignment = wrap_top
+        ws_readme.cell(row=rn, column=2).font = body_font
+        ws_readme.cell(row=rn, column=2).border = border
+        ws_readme.cell(row=rn, column=2).alignment = wrap_top
+
+    def _fallback_txt(track: str = "pms_openfda_psur") -> str:
+        return (
+            "PMS SURVEILLANCE MONITOR — TERMS OF SERVICE & LIABILITY DISCLAIMER\n"
+            "Automated compilation of public OpenFDA and ClinicalTrials.gov endpoints for EU MDR PSUR internal review.\n"
+            "Not legal or medical advice; PRRC/RA sign-off required. Liability capped at fees paid. Governed by French law.\n"
+        )
+
+    return _fallback_docx, _fallback_xlsx, _fallback_txt
 
 
 def generate_pms_excel_workbook(data: dict[str, Any], out_path: Path) -> None:
@@ -419,7 +544,10 @@ def generate_pms_excel_workbook(data: dict[str, Any], out_path: Path) -> None:
     hdr_font = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
     hdr_fill = PatternFill(start_color="112A46", end_color="112A46", fill_type="solid")
     body_font = Font(name="Calibri", size=10)
+    bold_font = Font(name="Calibri", size=10, bold=True)
     link_font = Font(name="Calibri", size=10, color="0563C1", underline="single")
+    thin = Side(border_style="thin", color="CBD5E1")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
     wrap_top = Alignment(wrap_text=True, vertical="top", horizontal="left")
 
     # Sheet 1: MAUDE_Adverse_Events
@@ -494,8 +622,10 @@ def generate_pms_excel_workbook(data: dict[str, Any], out_path: Path) -> None:
     ws4.append(["Search Window", data["search_window"]])
     ws4.append(["Data Sources", "OpenFDA MAUDE / 510(k) / Recall APIs (https://open.fda.gov/apis/) & ClinicalTrials.gov REST API v2 (https://clinicaltrials.gov/)."])
     ws4.append(["QA Disclaimer", "Prepared as a structured surveillance draft for EU MDR Art. 83-86 / MDCG 2022-21 PSUR workflows. All counts and clinical records require verification by a qualified regulatory affairs specialist."])
-    ws4.column_dimensions["A"].width = 26
-    ws4.column_dimensions["B"].width = 82
+    _, append_xlsx, _ = _load_pms_legal_helpers()
+    append_xlsx(ws4, border, bold_font, body_font, wrap_top, track="pms_openfda_psur")
+    ws4.column_dimensions["A"].width = 30
+    ws4.column_dimensions["B"].width = 92
 
     wb.save(str(out_path))
 
@@ -510,14 +640,17 @@ def build_pms_dossier(data: dict[str, Any], base_output_dir: str | Path = "outpu
     xlsx_p = pkg_dir / f"{slug}_pms_surveillance_workbook.xlsx"
     png_p = pkg_dir / f"{slug}_pms_dashboard.png"
     pdf_p = pkg_dir / f"{slug}_pms_dashboard.pdf"
+    terms_p = pkg_dir / "TERMS_OF_SERVICE_AND_DISCLAIMER.txt"
 
     generate_pms_dashboard(data, png_p, pdf_p)
     generate_pms_word_report(data, docx_p)
     generate_pms_excel_workbook(data, xlsx_p)
+    _, _, render_txt = _load_pms_legal_helpers()
+    terms_p.write_text(render_txt(track="pms_openfda_psur"), encoding="utf-8")
 
     zip_p = base_out / f"{slug}_dossier.zip"
     with zipfile.ZipFile(zip_p, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for fp in (docx_p, xlsx_p, png_p, pdf_p):
+        for fp in (docx_p, xlsx_p, png_p, pdf_p, terms_p):
             zf.write(fp, arcname=f"{slug}_dossier/{fp.name}")
 
     return {
@@ -526,6 +659,7 @@ def build_pms_dossier(data: dict[str, Any], base_output_dir: str | Path = "outpu
         "xlsx": xlsx_p,
         "png": png_p,
         "pdf": pdf_p,
+        "terms": terms_p,
         "zip": zip_p,
     }
 
