@@ -129,6 +129,29 @@ def fetch_live_pms_dataset(
             {"problem": "Unspecified device event problem (OpenFDA MAUDE)", "count": total_events, "pct": 100.0}
         ]
 
+    # 1.1b Monthly Trend & MDCG 2022-21 Signal Spike Detection (Z-score >= 2.0)
+    monthly_counts_map: Counter[str] = Counter()
+    try:
+        r_trend = requests.get(
+            f"{base_event_url}&count=date_received",
+            headers={"User-Agent": USER_AGENT},
+            timeout=12,
+        )
+        if r_trend.status_code == 200:
+            for item in r_trend.json().get("results", []):
+                raw_d = str(item.get("time", "")).strip()
+                if len(raw_d) >= 6 and raw_d[:6].isdigit():
+                    ym = f"{raw_d[:4]}-{raw_d[4:6]}"
+                    monthly_counts_map[ym] += int(item.get("count", 0) or 0)
+    except Exception:
+        pass
+
+    monthly_trend = [
+        {"month": ym, "count": monthly_counts_map[ym]}
+        for ym in sorted(monthly_counts_map.keys())[-12:]
+    ]
+    signal_spikes = compute_maude_signal_spikes(monthly_trend, z_threshold=2.0)
+
     # 1.2 OpenFDA 510(k) Clearances
     recalls_and_510k: list[dict[str, Any]] = []
     try:
@@ -199,10 +222,55 @@ def fetch_live_pms_dataset(
             "total_events_analyzed": total_events,
             "event_type_counts": event_type_counts,
             "top_device_problems": top_problems,
+            "monthly_trend": monthly_trend,
+            "signal_spikes": signal_spikes,
         },
         "recalls_and_510k": recalls_and_510k,
         "clinical_trials": clinical_trials,
     }
+
+
+def compute_maude_signal_spikes(
+    monthly_series: list[dict[str, Any]],
+    z_threshold: float = 2.0,
+    min_baseline: int = 3,
+) -> list[dict[str, Any]]:
+    """
+    Detect statistically elevated monthly MAUDE reporting volume against a trailing
+    baseline (MDCG 2022-21 PSUR trend analysis) using sample Z-score >= z_threshold.
+    """
+    if not monthly_series or len(monthly_series) <= min_baseline:
+        return []
+    ordered = sorted(monthly_series, key=lambda x: str(x.get("month", "")))
+    spikes: list[dict[str, Any]] = []
+    for idx in range(min_baseline, len(ordered)):
+        cur_m = str(ordered[idx].get("month", ""))
+        cur_cnt = int(ordered[idx].get("count", 0) or 0)
+        window = [int(x.get("count", 0) or 0) for x in ordered[max(0, idx - 12):idx]]
+        if not window:
+            continue
+        mean = sum(window) / len(window)
+        if len(window) > 1:
+            var = sum((x - mean) ** 2 for x in window) / (len(window) - 1)
+            sd = var ** 0.5
+        else:
+            sd = 0.0
+        eff_sd = sd if sd > 0.0 else (max(1.0, mean * 0.25) if cur_cnt > mean else 0.0)
+        if eff_sd <= 0.0:
+            continue
+        z = (cur_cnt - mean) / eff_sd
+        if z >= z_threshold:
+            pct_above = ((cur_cnt - mean) / mean * 100.0) if mean > 0 else 100.0
+            spikes.append({
+                "month": cur_m,
+                "count": cur_cnt,
+                "baseline_mean": round(mean, 1),
+                "baseline_sd": round(sd, 2),
+                "z_score": round(z, 2),
+                "pct_above_mean": round(pct_above, 1),
+                "status": "TREND_SPIKE_ALERT",
+            })
+    return spikes
 
 
 # ---------------------------------------------------------------------------
@@ -426,6 +494,31 @@ def generate_pms_word_report(data: dict[str, Any], out_path: Path) -> None:
         f"ClinicalTrials.gov Studies: {len(data.get('clinical_trials', []))}"
     ).bold = True
 
+    monthly_trend = ms.get("monthly_trend") or []
+    signal_spikes = ms.get("signal_spikes") if "signal_spikes" in ms else compute_maude_signal_spikes(monthly_trend)
+    if monthly_trend or signal_spikes:
+        p_trend = doc.add_paragraph()
+        p_trend.paragraph_format.space_before = Pt(3)
+        p_trend.paragraph_format.space_after = Pt(6)
+        r_tl = p_trend.add_run("MDCG 2022-21 Monthly Trend Surveillance (Z >= 2.0): ")
+        r_tl.font.size = Pt(9.2)
+        r_tl.font.bold = True
+        if signal_spikes:
+            top_sp = max(signal_spikes, key=lambda x: float(x.get("z_score", 0.0)))
+            trend_msg = (
+                f"SIGNAL SPIKE ALERT in {top_sp['month']}: {int(top_sp['count']):,} reports "
+                f"(+{float(top_sp['pct_above_mean']):.1f}% vs trailing {float(top_sp['baseline_mean']):.1f}/mo mean, "
+                f"Z = {float(top_sp['z_score']):+.2f}). Escalate for EU MDR Art. 88 trend reporting assessment."
+            )
+            r_tb = p_trend.add_run(trend_msg)
+            r_tb.font.size = Pt(9.2)
+            r_tb.font.color.rgb = RGBColor(0x99, 0x1B, 0x1B)
+        else:
+            r_tb = p_trend.add_run(
+                f"Trailing {len(monthly_trend)} monthly bins evaluated; zero statistically elevated spikes (Z >= 2.0) detected."
+            )
+            r_tb.font.size = Pt(9.2)
+
     # Table 1: Recalls & 510(k) Clearances
     p_t1 = doc.add_paragraph()
     p_t1.add_run("Table 1. FDA Recalls, Field Safety Notices & 510(k) Predicate Clearances").bold = True
@@ -565,6 +658,24 @@ def generate_pms_excel_workbook(data: dict[str, Any], out_path: Path) -> None:
         ws1.append([k, "Event Severity Type", v, round(100.0 * v / tot, 1)])
     for prob in ms["top_device_problems"]:
         ws1.append([prob["problem"], "Top Reported Device Problem", prob["count"], prob["pct"]])
+
+    monthly_trend = ms.get("monthly_trend") or []
+    signal_spikes = ms.get("signal_spikes") if "signal_spikes" in ms else compute_maude_signal_spikes(monthly_trend)
+    spike_fill = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+    for m_row in monthly_trend:
+        m_cnt = int(m_row.get("count", 0) or 0)
+        ws1.append([str(m_row.get("month", "")), "Monthly MAUDE Volume (YYYY-MM)", m_cnt, round(100.0 * m_cnt / tot, 1)])
+    for sp in signal_spikes:
+        label = (
+            f"{sp['month']} (Z={float(sp['z_score']):+.2f}, +{float(sp['pct_above_mean']):.1f}% "
+            f"vs {float(sp['baseline_mean']):.1f}/mo)"
+        )
+        ws1.append([label, "MDCG 2022-21 Signal Spike Alert (Z >= 2.0)", int(sp["count"]), round(100.0 * int(sp["count"]) / tot, 1)])
+        rn = ws1.max_row
+        for c_i in range(1, 5):
+            ws1.cell(row=rn, column=c_i).fill = spike_fill
+            ws1.cell(row=rn, column=c_i).font = bold_font
+
     ws1.auto_filter.ref = f"A1:D{ws1.max_row}"
     for col_l, w in zip(["A", "B", "C", "D"], [52, 28, 16, 14]):
         ws1.column_dimensions[col_l].width = w

@@ -16,6 +16,7 @@ from pms_monitor import (
     _clean_problem_label,
     _humanize_trial_status,
     build_pms_dossier,
+    compute_maude_signal_spikes,
     fetch_live_pms_dataset,
 )
 
@@ -90,6 +91,34 @@ class TestPMSMonitor(unittest.TestCase):
         full_txt = "\n".join(p.text for p in doc.paragraphs)
         self.assertIn("559,335", full_txt)
         self.assertIn("481,253", full_txt)
+
+    def test_maude_zscore_signal_spike_detection_and_outputs(self) -> None:
+        series = [
+            {"month": "2025-03", "count": 28},
+            {"month": "2025-04", "count": 31},
+            {"month": "2025-05", "count": 29},
+            {"month": "2025-06", "count": 30},
+            {"month": "2025-07", "count": 32},
+            {"month": "2025-08", "count": 30},
+            {"month": "2025-09", "count": 29},
+            {"month": "2025-10", "count": 31},
+            {"month": "2025-11", "count": 28},
+            {"month": "2025-12", "count": 30},
+            {"month": "2026-01", "count": 31},
+            {"month": "2026-02", "count": 61},
+        ]
+        spikes = compute_maude_signal_spikes(series, z_threshold=2.0)
+        self.assertEqual(len(spikes), 1)
+        self.assertEqual(spikes[0]["month"], "2026-02")
+        self.assertGreater(spikes[0]["z_score"], 10.0)
+
+        res = build_pms_dossier(self.data, self.temp_dir)
+        doc = Document(str(res["docx"]))
+        self.assertIn("SIGNAL SPIKE ALERT in 2026-02", "\n".join(p.text for p in doc.paragraphs))
+        wb = openpyxl.load_workbook(str(res["xlsx"]))
+        ws1 = wb["MAUDE_Adverse_Events"]
+        categories = [ws1.cell(row=r, column=2).value for r in range(2, ws1.max_row + 1)]
+        self.assertIn("MDCG 2022-21 Signal Spike Alert (Z >= 2.0)", categories)
 
 
 if __name__ == "__main__":

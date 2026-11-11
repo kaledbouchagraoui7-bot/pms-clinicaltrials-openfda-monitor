@@ -18,6 +18,20 @@
       {"problem": "Adhesive Skin Irritation / Contact Dermatitis", "count": 51, "pct": 12.1},
       {"problem": "Battery Premature Depletion / Charging Fault", "count": 38, "pct": 9.0},
       {"problem": "Pump Alarm / Audio Alert Failure", "count": 29, "pct": 6.9}
+    ],
+    "monthly_trend": [
+      {"month": "2025-03", "count": 32},
+      {"month": "2025-04", "count": 27},
+      {"month": "2025-05", "count": 35},
+      {"month": "2025-06", "count": 30},
+      {"month": "2025-07", "count": 38},
+      {"month": "2025-08", "count": 29},
+      {"month": "2025-09", "count": 33},
+      {"month": "2025-10", "count": 28},
+      {"month": "2025-11", "count": 36},
+      {"month": "2025-12", "count": 31},
+      {"month": "2026-01", "count": 29},
+      {"month": "2026-02", "count": 72}
     ]
   },
   "recalls_and_510k": [
