@@ -1,0 +1,46 @@
+==============================================================================
+  SENTINEL REGULATORY & TECHNICAL OPERATIONS — TERMS OF SERVICE & LIABILITY DISCLAIMER
+  Version 2026.1 | Track: pms_openfda_psur | Generated: 2026-11-11 22:49 UTC
+==============================================================================
+
+Provider & Commercial Entity Status
+-----------------------------------
+Prepared by Sentinel Regulatory & Technical Operations (Kaled Bouchagraoui, Strasbourg, France). Status: Pre-commercial technical studio (complimentary EUR 0 previews require no invoicing; any paid B2B contract executed exclusively via legal-representative authorization under French Civil Code Art. 388-2 & 389 / formal authorized billing entity prior to invoice issuance) (SIRET: Authorized billing entity / SIRET confirmed prior to paid invoicing; TVA non applicable, art. 293 B du CGI). Contact: kaledbouchagraoui7@gmail.com | Terms Version: 2026.1.
+
+1. Scope & Strictly Passive / Public Data Boundary
+--------------------------------------------------
+Automated retrieval and structuring of public U.S. FDA OpenFDA (MAUDE, 510(k), Recalls) and NLM ClinicalTrials.gov REST API v2 records into EU MDR Art. 83-86 / MDCG 2022-21 PSUR draft deliverables. All security checks remain strictly passive under Swiss Criminal Code Art. 143bis and EU cybersecurity norms, and no patient-identifiable data (PHI/PII) is ingested during automated public-registry runs.
+
+2. No Legal, Medical, Regulatory Approval, or Certified Pen-Test Advice
+-----------------------------------------------------------------------
+All scores, Word dossiers, Excel workbooks, PRISMA tables, PSUR drafts, statutory gatekeeper alerts, and sample server/DNS configuration snippets are provided strictly as automated engineering and documentation preparation aids. They do NOT constitute formal legal advice (Rechtsberatung / conseil juridique), clinical medical advice, a binding GDPR/nFADP adequacy opinion, or an accredited penetration-test certification. All regulatory deliverables must be independently reviewed and signed off by the Client's qualified Regulatory Affairs Specialist, PRRC (EU MDR Art. 15), DPO, or legal counsel prior to submission.
+
+3. Zero Fabrication Integrity & Public Source Accuracy
+------------------------------------------------------
+Software outputs reflect third-party public endpoints (DNS, HTTP headers, OpenFDA CC0, NLM ClinicalTrials.gov v2, Europe PMC / NCBI PubMed) or Client-supplied files at the exact capture timestamp. Missing DOIs or conclusions are never invented and are highlighted in soft amber for manual QA verification. Third-party registries can update after capture.
+
+4. Client Authorization & Deployment Responsibility
+---------------------------------------------------
+By commissioning a paid deliverable or providing internal datasets/URLs, the Client represents that it holds full legal authority over the target domain or dataset. Where optional Nginx, Cloudflare, Apache, or DNS records are included, the Client's IT administrator is solely responsible for staging, testing, and backing up live production configurations before deployment.
+
+5. Limitation of Liability & No Guarantee of Agency Clearance
+-------------------------------------------------------------
+To the maximum extent permitted by applicable French law, deliverables are provided 'as is' at the point-in-time capture without warranty of uninterrupted regulatory approval by any Notified Body, FDA, EMA, MHRA, Swissmedic, or CNIL. The Provider shall not be liable for indirect, incidental, lost-profit, business-interruption, or regulatory-fine damages. Provider's total cumulative liability for any claim arising out of an engagement is strictly capped at the total fees actually paid by the Client for that specific engagement (EUR 0 / zero liability for complimentary 1-page pre-engagement evaluation previews).
+
+6. Invoicing, Payment & Intellectual Property License
+-----------------------------------------------------
+Complimentary 1-page diagnostic previews are provided at EUR 0.00. Any paid multi-file engagement requires explicit written scope confirmation and formal authorized legal-representative billing structure prior to payment collection via Tiime invoice / Stripe Payment Link / SEPA. Upon receipt of full cleared payment via Tiime / Stripe / SEPA, the Client receives a perpetual, non-exclusive internal business license to use, modify, and file the generated reports and configuration outputs. Underlying automation software and source code remain the exclusive intellectual property of the Provider.
+
+7. Governing Law & Dispute Resolution
+-------------------------------------
+These Terms are governed by the Laws of France. In the event of any dispute arising out of commercial deliverables, the parties agree to seek amicable resolution first, failing which competent courts within the jurisdiction of Strasbourg, France shall have jurisdiction to the extent permitted by law.
+
+==============================================================================
+  GDPR & SWISS nFADP PRIVACY NOTICE SUMMARY
+==============================================================================
+
+- Data Controller: Sentinel Regulatory & Technical Operations (Kaled Bouchagraoui), operating from Strasbourg, France. Privacy & erasure contact: kaledbouchagraoui7@gmail.com.
+- Data Processed & Lawful Basis (EU GDPR Art. 6): For B2B technical outreach and contracted service delivery, we process only business contact details published on corporate websites (role/company email, company domain), client-supplied billing details required for statutory Tiime/French invoicing (GDPR Art. 6(1)(b)/(c)), and strictly passive public DNS/TLS/HTTP response metadata or public scientific database records under legitimate business interest (GDPR Art. 6(1)(f) & CNIL B2B guidelines).
+- Zero Patient / Special-Category Health Data: Automated surveillance workflows query public aggregated endpoints (OpenFDA, ClinicalTrials.gov, PubMed/Europe PMC) or synthetic datasets. Clients must not transmit identifiable Protected Health Information (PHI) unless covered by a separate written Data Processing Addendum (DPA).
+- Sub-Processors & Retention: Business correspondence and invoices use encrypted cloud mail/accounting providers (Gmail/Zoho, Tiime, Stripe when enabled) under EU/standard contractual safeguards. Deliverables are retained during active engagement and statutory accounting periods (10 years for French invoices; immediate deletion upon request for evaluation previews).
+- Data Subject Rights & Immediate Opt-Out: Under EU GDPR Arts. 15-22 and Swiss nFADP, recipients may request access, rectification, or permanent suppression at any time by replying 'no' or emailing kaledbouchagraoui7@gmail.com.

@@ -119,6 +119,17 @@ class TestPMSMonitor(unittest.TestCase):
         ws1 = wb["MAUDE_Adverse_Events"]
         categories = [ws1.cell(row=r, column=2).value for r in range(2, ws1.max_row + 1)]
         self.assertIn("MDCG 2022-21 Signal Spike Alert (Z >= 2.0)", categories)
+        self.assertTrue(res["png"].exists() and res["png"].stat().st_size > 25000)
+
+        # Also verify clean PNG/PDF rendering when baseline has zero signal spikes
+        no_spike_data = json.loads(json.dumps(self.data))
+        no_spike_data["maude_summary"]["monthly_trend"] = [
+            {"month": "2026-01", "count": 30},
+            {"month": "2026-02", "count": 31},
+        ]
+        res_clean = build_pms_dossier(no_spike_data, self.temp_dir / "no_spike")
+        self.assertTrue(res_clean["png"].exists() and res_clean["png"].stat().st_size > 25000)
+        self.assertTrue(res_clean["pdf"].exists() and res_clean["pdf"].stat().st_size > 5000)
 
 
 if __name__ == "__main__":

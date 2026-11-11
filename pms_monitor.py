@@ -333,13 +333,13 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
     if data.get("is_fictional_sample"):
         title_str += " [SAMPLE DEMO]"
     ax.text(0.50, 6.68, title_str, fontsize=12.0, fontweight="bold", color="#FFFFFF", va="top", zorder=3)
-    win_str = str(data.get("search_window", "")).strip()
+    win_str = textwrap.shorten(str(data.get("search_window", "")).strip(), width=54, placeholder="...")
     banner_sub = f"Device Scope: {data['device_category']}  |  Window: {win_str}"
-    if len(banner_sub) > 132:
-        max_dev_w = max(72, 132 - len(f"Device Scope:   |  Window: {win_str}"))
+    if len(banner_sub) > 136:
+        max_dev_w = max(72, 136 - len(f"  |  Window: {win_str}"))
         dev_disp = textwrap.shorten(f"Device Scope: {data['device_category']}", width=max_dev_w, placeholder="...")
         banner_sub = f"{dev_disp}  |  Window: {win_str}"
-    banner_fs = 7.9 if len(banner_sub) > 112 else 8.4
+    banner_fs = 7.0 if len(banner_sub) > 118 else (7.5 if len(banner_sub) > 96 else 8.1)
     ax.text(
         0.50, 6.30,
         banner_sub,
@@ -369,14 +369,39 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
         ax.text(3.40, y_ev, f"{val_ev:,} reports", ha="right", va="center", fontsize=8.8, fontweight="bold", color=col_ev)
         y_ev -= 0.28
 
-    # Right Card: Top Reported Device Malfunction / Problem Modes
+    # Right Card: Top Reported Device Malfunction / Problem Modes + MDCG 2022-21 Spike Alert
     right_card = FancyBboxPatch(
         (3.90, 3.10), 6.85, 2.70,
         boxstyle="round,pad=0.0,rounding_size=0.08",
         facecolor="#F8FAFC", edgecolor="#CBD5E1", linewidth=1.2, zorder=2
     )
     ax.add_patch(right_card)
-    ax.text(4.15, 5.56, "TOP REPORTED DEVICE PROBLEM MODES (MAUDE)", ha="left", va="top", fontsize=9.2, fontweight="bold", color="#1E293B")
+    ax.text(4.15, 5.56, "TOP PROBLEM MODES (MAUDE)", ha="left", va="top", fontsize=8.4, fontweight="bold", color="#1E293B")
+
+    monthly_trend = ms.get("monthly_trend") or []
+    signal_spikes = ms.get("signal_spikes") if "signal_spikes" in ms else compute_maude_signal_spikes(monthly_trend)
+    if signal_spikes:
+        top_sp = max(signal_spikes, key=lambda x: float(x.get("z_score", 0.0)))
+        sp_txt = (
+            f"MDCG SPIKE: {top_sp['month']} "
+            f"(+{float(top_sp['pct_above_mean']):.0f}%, Z={float(top_sp['z_score']):+.1f})"
+        )
+        sp_bg = "#FEF2F2" if float(top_sp.get("z_score", 0.0)) >= 3.0 else "#FFFBEB"
+        sp_edge = "#FCA5A5" if float(top_sp.get("z_score", 0.0)) >= 3.0 else "#FCD34D"
+        sp_fg = "#991B1B" if float(top_sp.get("z_score", 0.0)) >= 3.0 else "#92400E"
+        ax.text(
+            10.50, 5.56, sp_txt,
+            ha="right", va="top", fontsize=7.0, fontweight="bold", color=sp_fg,
+            bbox=dict(boxstyle="round,pad=0.22", facecolor=sp_bg, edgecolor=sp_edge, linewidth=0.9),
+            zorder=5,
+        )
+    elif monthly_trend:
+        ax.text(
+            10.50, 5.56, f"Trend Baseline Stable ({len(monthly_trend)} mo)",
+            ha="right", va="top", fontsize=7.0, fontweight="bold", color="#0F766E",
+            bbox=dict(boxstyle="round,pad=0.22", facecolor="#ECFDF5", edgecolor="#A7F3D0", linewidth=0.8),
+            zorder=5,
+        )
 
     probs_top = ms.get("top_device_problems", [])[:5]
     bar_scale = max([float(p.get("pct", 0.0) or 0.0) for p in probs_top] + [40.0])
