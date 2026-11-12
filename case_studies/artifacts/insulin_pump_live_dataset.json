@@ -1,0 +1,450 @@
+{
+  "project_slug": "insulin_pump_type_1_diabetes",
+  "device_category": "Ambulatory Insulin Infusion Pumps \u2014 OpenFDA MAUDE & ClinicalTrials.gov v2",
+  "eu_mdr_class": "Class IIb / Active Infusion System (EU MDR)",
+  "search_window": "Live API Snapshot (2026-11-12 UTC)",
+  "is_fictional_sample": false,
+  "maude_summary": {
+    "total_events_analyzed": 2056124,
+    "event_type_counts": {
+      "Malfunction": 1786860,
+      "Injury": 266177,
+      "Death": 2191,
+      "Other": 693,
+      "": 203
+    },
+    "top_device_problems": [
+      {
+        "problem": "Pumping Stopped",
+        "count": 421798,
+        "pct": 20.5
+      },
+      {
+        "problem": "Obstruction of Flow",
+        "count": 134822,
+        "pct": 6.6
+      },
+      {
+        "problem": "Break",
+        "count": 127253,
+        "pct": 6.2
+      },
+      {
+        "problem": "Adverse Event Without Identified Device or Use Problem",
+        "count": 122700,
+        "pct": 6.0
+      },
+      {
+        "problem": "Charging Problem",
+        "count": 120157,
+        "pct": 5.8
+      },
+      {
+        "problem": "Incorrect Measurement",
+        "count": 117385,
+        "pct": 5.7
+      }
+    ],
+    "monthly_trend": [
+      {
+        "month": "2025-11",
+        "count": 19803
+      },
+      {
+        "month": "2025-12",
+        "count": 24915
+      },
+      {
+        "month": "2026-01",
+        "count": 20612
+      },
+      {
+        "month": "2026-02",
+        "count": 19650
+      },
+      {
+        "month": "2026-03",
+        "count": 21496
+      },
+      {
+        "month": "2026-04",
+        "count": 20401
+      },
+      {
+        "month": "2026-05",
+        "count": 19244
+      },
+      {
+        "month": "2026-06",
+        "count": 20762
+      },
+      {
+        "month": "2026-07",
+        "count": 21550
+      },
+      {
+        "month": "2026-08",
+        "count": 20090
+      },
+      {
+        "month": "2026-09",
+        "count": 20417
+      },
+      {
+        "month": "2026-10",
+        "count": 20222
+      }
+    ],
+    "signal_spikes": []
+  },
+  "recalls_and_510k": [
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K253470",
+      "manufacturer": "Medtronic Minimed, Inc.",
+      "product_code": "QFG",
+      "date": "2026-01-15",
+      "status_or_decision": "Substantially Equivalent",
+      "summary": "MiniMed 780G Insulin Pump (MMT-1884); MiniMed 780G Insulin Pump Kit (MMT-1894)"
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K253074",
+      "manufacturer": "Tandem Diabetes Care, Inc.",
+      "product_code": "QFG",
+      "date": "2025-11-06",
+      "status_or_decision": "Substantially Equivalent",
+      "summary": "Tandem Mobi insulin pump with interoperable technology"
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K250792",
+      "manufacturer": "Tandem Diabetes Care, Inc.",
+      "product_code": "QFG",
+      "date": "2025-09-24",
+      "status_or_decision": "Substantially Equivalent",
+      "summary": "t:slim X2 insulin pump with interoperable technology"
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K251032",
+      "manufacturer": "Medtronic Minimed, Inc.",
+      "product_code": "QFG",
+      "date": "2025-07-01",
+      "status_or_decision": "Substantially Equivalent",
+      "summary": "MiniMed 780G insulin pump"
+    },
+    {
+      "record_type": "510(k) Clearance",
+      "reference_id": "K241078",
+      "manufacturer": "Tandem Diabetes Care, Inc.",
+      "product_code": "QFG",
+      "date": "2024-07-26",
+      "status_or_decision": "Substantially Equivalent",
+      "summary": "Tandem Mobi Insulin Pump with interoperable technology"
+    }
+  ],
+  "clinical_trials": [
+    {
+      "nct_id": "NCT01742741",
+      "title": "Early Feasibility Study 2 of Outpatient Control-to-Range - Testing System Efficacy (France)",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "University of Virginia",
+      "enrollment": 5,
+      "primary_outcome": "Effect size of Control-to-Range (CTR) vs. Continuous Glucose Monitor (CGM)-augmented insulin pump treatment in an outpatient setting."
+    },
+    {
+      "nct_id": "NCT04761094",
+      "title": "Clinical Efficacy of Insulin Pumps in Type 1 Diabetes Mellitus Patients in Spain",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Castilla-La Mancha Health Service",
+      "enrollment": 2977,
+      "primary_outcome": "HbA1C"
+    },
+    {
+      "nct_id": "NCT00891995",
+      "title": "Effect of Metabolic Control at Onset of Diabetes on Progression of Type 1 Diabetes",
+      "status": "TERMINATED",
+      "phase": "PHASE2/PHASE3",
+      "sponsor": "Jaeb Center for Health Research",
+      "enrollment": 71,
+      "primary_outcome": "C-peptide Average Area Under the Curve (AUC) in Response to a Mixed Meal at 1 Year Following Enrollment."
+    },
+    {
+      "nct_id": "NCT03838900",
+      "title": "The Loop Observational Study",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Jaeb Center for Health Research",
+      "enrollment": 1212,
+      "primary_outcome": "Measure of Loop Safety by Self-Report of Diabetic Ketoacidosis (DKA) Events"
+    },
+    {
+      "nct_id": "NCT03815487",
+      "title": "Comparison of Two Management Systems in Patients With Type 1 Diabetes (Pediatric SmartHome)",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Kinderkrankenhaus auf der Bult",
+      "enrollment": 40,
+      "primary_outcome": "Reduction of Sensor Glucose"
+    },
+    {
+      "nct_id": "NCT04031599",
+      "title": "Assessment of the Efficacy of the Artificial Pancreas Combined With a Qualitative Meal Size Estimation to Control Postprandial Glucose Levels",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Institut de Recherches Cliniques de Montreal",
+      "enrollment": 30,
+      "primary_outcome": "Percentage of time of glucose levels spent between 3.9 and 10.0 mmol/L"
+    },
+    {
+      "nct_id": "NCT06856954",
+      "title": "The Skin Barrier in Users of Diabetes Devices",
+      "status": "RECRUITING",
+      "phase": "NA",
+      "sponsor": "Jannet Svensson",
+      "enrollment": 150,
+      "primary_outcome": "electric impedance spectroscopy (EIS)"
+    },
+    {
+      "nct_id": "NCT01833988",
+      "title": "The Summer Camp Study: Blood Glucose Control With a Bi-Hormonal Bionic Endocrine Pancreas",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Massachusetts General Hospital",
+      "enrollment": 32,
+      "primary_outcome": "Difference in Average Blood Glucose (BG) Between Closed-loop (Bionic Pancreas Arm) and Open-loop (Insulin Pump Arm) Periods as Determined Fr"
+    },
+    {
+      "nct_id": "NCT03078491",
+      "title": "Technological Advances in Glucose Management in Older Adults",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Joslin Diabetes Center",
+      "enrollment": 168,
+      "primary_outcome": "Change in duration of hypoglycemia"
+    },
+    {
+      "nct_id": "NCT03671161",
+      "title": "Flash Glucose Measure System and Continuous Subcutaneous Insulin Infusion Therapy in Poorly Controlled Diabetes Type 1 Patients",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Groupe Hospitalier Pitie-Salpetriere",
+      "enrollment": 19,
+      "primary_outcome": "Change in HbA1c \u22651%"
+    },
+    {
+      "nct_id": "NCT06880835",
+      "title": "Effect of Inhaled Technosphere Insulin vs RAA Insulin on Exercise-Induced Hypoglycemia in Adults With T1D Using Automated Insulin Delivery",
+      "status": "RECRUITING",
+      "phase": "NA",
+      "sponsor": "Jaeb Center for Health Research",
+      "enrollment": 30,
+      "primary_outcome": "PHASE 1: Blood glucose <70 mg/dL"
+    },
+    {
+      "nct_id": "NCT00501072",
+      "title": "Safety and Efficacy of RT-CGMS in Patients With Type 1 Diabetes Mellitus Treated With an Implantable Pump",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "Medical Research Foundation, The Netherlands",
+      "enrollment": 12,
+      "primary_outcome": "Clinical effectiveness: percentage of time spent in euglycaemia"
+    },
+    {
+      "nct_id": "NCT07455643",
+      "title": "Closed-loop Response to Unannounced Mixed and Carbohydrates-rich Breakfasts",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "University of Catania",
+      "enrollment": 20,
+      "primary_outcome": "Change in blood glucose concentration from pre-meal to two hours post-meal (2h-\u0394BG), as measured by CGM in mg/dl"
+    },
+    {
+      "nct_id": "NCT01678235",
+      "title": "Insulin Glulisine and Aspart in Postprandial Glycemic Control After High-GI Meal in Children With Type 1 Diabetes Mellitus",
+      "status": "COMPLETED",
+      "phase": "PHASE4",
+      "sponsor": "Medical University of Warsaw",
+      "enrollment": 64,
+      "primary_outcome": "Postprandial glycemia"
+    },
+    {
+      "nct_id": "NCT01839370",
+      "title": "Phase 2 Study of Adaptive Insulin Meal Supervisor (AIMS) in Adults With Type 1 Diabetes Mellitus",
+      "status": "COMPLETED",
+      "phase": "NA",
+      "sponsor": "University of Virginia",
+      "enrollment": 9,
+      "primary_outcome": "Percent of Glucose Measurements within Target Range"
+    }
+  ],
+  "target_company": "Public Class IIb Cohort",
+  "extended_analysis_36m": {
+    "months_analyzed": 35,
+    "monthly_counts": [
+      {
+        "month": "2023-11",
+        "count": 19963
+      },
+      {
+        "month": "2023-12",
+        "count": 19542
+      },
+      {
+        "month": "2024-01",
+        "count": 21429
+      },
+      {
+        "month": "2024-02",
+        "count": 18706
+      },
+      {
+        "month": "2024-03",
+        "count": 21996
+      },
+      {
+        "month": "2024-04",
+        "count": 22163
+      },
+      {
+        "month": "2024-05",
+        "count": 22767
+      },
+      {
+        "month": "2024-06",
+        "count": 18900
+      },
+      {
+        "month": "2024-07",
+        "count": 28819
+      },
+      {
+        "month": "2024-08",
+        "count": 27640
+      },
+      {
+        "month": "2024-09",
+        "count": 22424
+      },
+      {
+        "month": "2024-10",
+        "count": 23972
+      },
+      {
+        "month": "2024-11",
+        "count": 19187
+      },
+      {
+        "month": "2024-12",
+        "count": 23482
+      },
+      {
+        "month": "2025-01",
+        "count": 27029
+      },
+      {
+        "month": "2025-02",
+        "count": 17856
+      },
+      {
+        "month": "2025-03",
+        "count": 20584
+      },
+      {
+        "month": "2025-04",
+        "count": 22184
+      },
+      {
+        "month": "2025-05",
+        "count": 21453
+      },
+      {
+        "month": "2025-06",
+        "count": 18888
+      },
+      {
+        "month": "2025-07",
+        "count": 30275
+      },
+      {
+        "month": "2025-08",
+        "count": 24764
+      },
+      {
+        "month": "2025-09",
+        "count": 24914
+      },
+      {
+        "month": "2025-10",
+        "count": 24206
+      },
+      {
+        "month": "2025-11",
+        "count": 19803
+      },
+      {
+        "month": "2025-12",
+        "count": 24915
+      },
+      {
+        "month": "2026-01",
+        "count": 20612
+      },
+      {
+        "month": "2026-02",
+        "count": 19650
+      },
+      {
+        "month": "2026-03",
+        "count": 21496
+      },
+      {
+        "month": "2026-04",
+        "count": 20401
+      },
+      {
+        "month": "2026-05",
+        "count": 19244
+      },
+      {
+        "month": "2026-06",
+        "count": 20762
+      },
+      {
+        "month": "2026-07",
+        "count": 21550
+      },
+      {
+        "month": "2026-08",
+        "count": 20090
+      },
+      {
+        "month": "2026-09",
+        "count": 20417
+      }
+    ],
+    "z_threshold_2_0_spikes": [
+      {
+        "month": "2024-07",
+        "count": 28819,
+        "baseline_mean": 20683.2,
+        "baseline_sd": 1591.13,
+        "z_score": 5.11,
+        "pct_above_mean": 39.3,
+        "status": "TREND_SPIKE_ALERT"
+      },
+      {
+        "month": "2025-07",
+        "count": 30275,
+        "baseline_mean": 22793.2,
+        "baseline_sd": 3560.17,
+        "z_score": 2.1,
+        "pct_above_mean": 32.8,
+        "status": "TREND_SPIKE_ALERT"
+      }
+    ]
+  }
+}

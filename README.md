@@ -64,6 +64,10 @@ python -m unittest discover -p "test_*.py" -v
 
 ---
 
+## Public Dataset Case Study
+
+- **[Case Study 01 — Insulin Infusion Pumps (`n = 2,056,124` MAUDE MDRs)](case_studies/01_insulin_pump_maude_zscore_study.md)** · ([Reproducible Notebook](case_studies/01_insulin_pump_maude_zscore_study.ipynb)): Evaluates trailing-baseline Z-score sensitivity (`12m` vs. `35m`), uncovering recurring July excursions (`2024-07` at `Z = +5.11`; `2025-07` at `Z = +2.10`) alongside denominator & PRRC clinical boundaries.
+
 ## Data Source Terms & Legal Compliance
 
 - **ClinicalTrials.gov API v2**: Subject to NLM/NIH terms at https://clinicaltrials.gov/
