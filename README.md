@@ -9,9 +9,9 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Regulatory Scope](https://img.shields.io/badge/Scope-EU_MDR_PSUR_%7C_OpenFDA_MAUDE_%7C_ClinicalTrials.gov-0D9488.svg)](#overview)
-[![Storefront](https://img.shields.io/badge/Service_Catalog-Storefront_%26_Legal_(EN%2FFR)-0F172A.svg)](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)
+[![Architecture & Specimens](https://img.shields.io/badge/Docs-Specimens_%26_Legal_(EN%2FFR)-0F172A.svg)](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)
 
-> **Turnkey PSUR Surveillance Storefront:** Run the OpenFDA MAUDE pre-check, inspect sample deliverables, or apply for a Design Partner Pilot at **[Executive Storefront, Live Pre-Check & Bilingual Terms (EN / FR)](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)**.
+> **100% Free & Open-Source (MIT):** Built for regulatory affairs students, academic safety researchers, and small MedTech QA/RA teams tracking public OpenFDA MAUDE & ClinicalTrials.gov v2 signals without paid SaaS subscriptions. *(Interactive specimens & EN/FR documentation: [MedTech Compliance Automation Portal](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/).)*
 
 ---
 
@@ -19,12 +19,20 @@
 
 Under **EU MDR 2017/745 Articles 83–86** and **MDCG 2022-21**, medical device manufacturers and Clinical Research Organizations (CROs) must continuously monitor similar/competitor devices across **FDA MAUDE (adverse events, recalls, 510(k) clearances)** and **`ClinicalTrials.gov` (ongoing PMCF and competitor clinical investigations)** to compile their **Periodic Safety Update Report (PSUR)** and **Clinical Evaluation Report (CER)** updates.
 
-`pms_monitor.py` automates this workflow and produces a complete, audit-ready **PMS / PSUR Dossier**:
+`pms_monitor.py` automates public-registry data collection and produces a reproducible starting **PMS / PSUR Draft Dossier**:
 
 1. **Landscape Word PSUR Safety & Clinical Trial Report (`.docx`)** — Pre-formatted tables covering MAUDE adverse event severity (`Malfunction`, `Injury`, `Death`), FDA recalls & 510(k) clearances, and tracked `ClinicalTrials.gov` studies.
 2. **4-Sheet Filterable Excel Surveillance Workbook (`.xlsx`)** — `MAUDE_Adverse_Events`, `Recalls_and_510k`, `ClinicalTrials_Landscape` (with clickable `https://clinicaltrials.gov/study/<NCTId>` hyperlinks), and `README`.
-3. **300-DPI Visual PMS & Clinical Landscape Dashboard (`.png` & `.pdf`)** — High-resolution executive chart ready to embed in PSUR decks or client briefings.
+3. **300-DPI Visual PMS & Clinical Landscape Dashboard (`.png` & `.pdf`)** — High-resolution executive chart ready to inspect in PSUR reviews.
 4. **Zipped Deliverable Package (`<slug>_dossier.zip`)**.
+
+## Automation Boundaries: What Code Does vs. Human Judgment
+
+| What `pms_monitor.py` Automates (Deterministic) | What Requires Qualified Human Judgment (PRRC / Clinician) |
+|---|---|
+| Pulling live OpenFDA MAUDE event counts, 510(k) clearances, recalls, and ClinicalTrials.gov v2 study statuses | Clinical causality assessment, IMDRF Annex coding validation, and serious-incident reportability decisions |
+| Computing monthly rolling volume trends and Z-score statistical spike flags across public baselines | Determining whether a spike reflects true device degradation, denominator shifts, or reporting artifacts |
+| Formatting ALCOA+ traceable Word, Excel, and visual baselines in under 10 seconds | Authoring the benefit-risk determination and final EU MDR PSUR/PMCF clinical sign-off |
 
 ---
 
