@@ -313,6 +313,38 @@ def _clean_problem_label(raw_problem: str) -> str:
     return text
 
 
+def _resolve_footer_domain(data: dict[str, Any] | None = None) -> str:
+    """Resolve optional clean custom domain for PMS dashboard footers (never emits -bot.github.io)."""
+    cand = ""
+    if isinstance(data, dict):
+        cand = str(data.get("custom_domain") or "").strip()
+    if not cand:
+        cand = os.environ.get("SENTINEL_CUSTOM_DOMAIN", "").strip()
+    if not cand:
+        for base in (
+            Path(__file__).resolve().parent,
+            Path(__file__).resolve().parent.parent / "medtech-regulatory-compliance-suite",
+        ):
+            cfg_p = base / "client_ops_config.json"
+            if cfg_p.is_file():
+                try:
+                    raw_cfg = json.loads(cfg_p.read_text(encoding="utf-8"))
+                    prov = raw_cfg.get("provider", {}) if isinstance(raw_cfg, dict) else {}
+                    raw = str(prov.get("custom_domain") or "").strip()
+                    if not raw:
+                        w = str(prov.get("website_url") or "").strip()
+                        if w and "kaledbouchagraoui7-bot" not in w.lower():
+                            raw = w
+                    if raw:
+                        cand = raw
+                        break
+                except Exception:
+                    continue
+    if not cand or "kaledbouchagraoui7-bot" in cand.lower():
+        return ""
+    return re.sub(r"^https?://", "", cand, flags=re.I).strip().rstrip("/")
+
+
 def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path) -> None:
     """Render a 300-DPI executive Post-Market Surveillance & Clinical Landscape chart."""
     fig, ax = plt.subplots(figsize=(11.0, 7.2), dpi=300)
@@ -466,9 +498,10 @@ def generate_pms_dashboard(data: dict[str, Any], png_path: Path, pdf_path: Path)
         )
         ty -= 0.35
 
+    footer_custom = _resolve_footer_domain(data)
+    right_footer = footer_custom if footer_custom else "ALCOA+ Public API Snapshot · Strasbourg, FR"
     footer_txt = (
-        "EU MDR Art. 83-86 & MDCG 2022-21 draft QA view (verify against source records)  |  "
-        "Samples & terms: kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite"
+        f"EU MDR Art. 83-86 & MDCG 2022-21 draft QA view (verify against source records)  |  {right_footer}"
     )
     ax.text(5.5, 0.12, footer_txt, ha="center", va="bottom", fontsize=7.3, style="italic", color="#64748B")
 
