@@ -2,16 +2,15 @@
   <img src="assets/sentinel_logo_full.png" alt="Sentinel — ClinicalTrials.gov & OpenFDA PMS Monitor" width="760" />
 </div>
 
-# Automated ClinicalTrials.gov + OpenFDA MAUDE Post-Market Surveillance (PMS) Monitor
+# OpenFDA MAUDE & ClinicalTrials.gov CLI Utility
 
-**Automated EU MDR 2017/745 Article 83–86 (PMS / PSUR), MDCG 2022-21, and FDA 21 CFR Part 803 Competitive Safety & Clinical Trial Landscape Surveillance Engine.**
+**Open-source Python CLI for querying public FDA MAUDE adverse-event counts, recalls, 510(k) clearances, and ClinicalTrials.gov v2 studies into structured Excel and Word tables.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Regulatory Scope](https://img.shields.io/badge/Scope-EU_MDR_PSUR_%7C_OpenFDA_MAUDE_%7C_ClinicalTrials.gov-0D9488.svg)](#overview)
-[![Architecture & Specimens](https://img.shields.io/badge/Docs-Specimens_%26_Legal_(EN%2FFR)-0F172A.svg)](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/)
+[![Regulatory Scope](https://img.shields.io/badge/Scope-OpenFDA_MAUDE_%7C_ClinicalTrials.gov-0D9488.svg)](#overview)
 
-> **100% Free & Open-Source (MIT):** Built for regulatory affairs students, academic safety researchers, and small MedTech QA/RA teams tracking public OpenFDA MAUDE & ClinicalTrials.gov v2 signals without paid SaaS subscriptions. *(Interactive specimens & EN/FR documentation: [MedTech Compliance Automation Portal](https://kaledbouchagraoui7-bot.github.io/medtech-regulatory-compliance-suite/).)*
+> **100% Free & Open-Source CLI Utility (MIT):** Built as a student data-engineering project to parse public OpenFDA & ClinicalTrials.gov v2 JSON APIs. *(See also the flagship research repo: [`computational-biology-portfolio`](https://github.com/kaledbouchagraoui7-bot/computational-biology-portfolio).)*
 
 ---
 
