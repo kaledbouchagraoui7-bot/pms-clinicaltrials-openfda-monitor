@@ -43,7 +43,7 @@ Extending retrieval to **35 complete trailing months (`2023-11`–`2026-09`, `mi
 | **`2024-07`** | `28,819` | `20,683.2` | `1,591.13` | **`+5.11`** | `+39.3%` | `TREND_SPIKE_ALERT` |
 | **`2025-07`** | `30,275` | `22,793.2` | `3,560.17` | **`+2.10`** | `+32.8%` | `TREND_SPIKE_ALERT` |
 
-*Key quantitative observation:* Notice that **both** `Z >= 2.0` excursions occurred in **July (`2024-07` and `2025-07`)**, consistent with recurring mid-year batch submissions, warmer-season adhesive/sensor stress, or manufacturer reporting cutoffs rather than random noise.
+*Key quantitative observation (flagged for review):* Both `Z >= 2.0` excursions (`2024-07` and `2025-07`) fall in July and are **flagged for investigation**, not treated as a device-safety conclusion. Because MAUDE captures raw report counts affected by reporting lags, batch filings, and installed-base changes—never incidence rates—a qualified PRRC must check internal sales/complaint denominators and full MDR narratives before drawing clinical conclusions.
 
 ### 2.3 Parallel 510(k) & ClinicalTrials.gov v2 Landscape
 

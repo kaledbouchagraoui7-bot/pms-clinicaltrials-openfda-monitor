@@ -31,8 +31,8 @@ Under **EU MDR 2017/745 Articles 83–86** and **MDCG 2022-21**, medical device 
 | What `pms_monitor.py` Automates (Deterministic) | What Requires Qualified Human Judgment (PRRC / Clinician) |
 |---|---|
 | Pulling live OpenFDA MAUDE event counts, 510(k) clearances, recalls, and ClinicalTrials.gov v2 study statuses | Clinical causality assessment, IMDRF Annex coding validation, and serious-incident reportability decisions |
-| Computing monthly rolling volume trends and Z-score statistical spike flags across public baselines | Determining whether a spike reflects true device degradation, denominator shifts, or reporting artifacts |
-| Formatting ALCOA+ traceable Word, Excel, and visual baselines in under 10 seconds | Authoring the benefit-risk determination and final EU MDR PSUR/PMCF clinical sign-off |
+| Computing monthly rolling volume trends and Z-score flags for review (raw counts, not incidence rates) | Determining whether a spike reflects true device degradation, denominator shifts, or reporting lag/batch artifacts |
+| Automating the mechanical formatting of ALCOA+ Word, Excel, and visual draft packs | Operator setup, verification time, benefit-risk determination, and final EU MDR PSUR/PMCF clinical sign-off |
 
 ---
 
@@ -66,7 +66,7 @@ python -m unittest discover -p "test_*.py" -v
 
 ## Public Dataset Case Study
 
-- **[Case Study 01 — Insulin Infusion Pumps (`n = 2,056,124` MAUDE MDRs)](case_studies/01_insulin_pump_maude_zscore_study.md)** · ([Reproducible Notebook](case_studies/01_insulin_pump_maude_zscore_study.ipynb)): Evaluates trailing-baseline Z-score sensitivity (`12m` vs. `35m`), uncovering recurring July excursions (`2024-07` at `Z = +5.11`; `2025-07` at `Z = +2.10`) alongside denominator & PRRC clinical boundaries.
+- **[Case Study 01 — Insulin Infusion Pumps (`n = 2,056,124` MAUDE MDRs)](case_studies/01_insulin_pump_maude_zscore_study.md)** · ([Reproducible Notebook](case_studies/01_insulin_pump_maude_zscore_study.ipynb)): Evaluates trailing-baseline Z-score sensitivity (`12m` vs. `35m`), noting July reporting volumes (`2024-07` at `Z = +5.11`; `2025-07` at `Z = +2.10`) **flagged for review** (raw counts, not incidence rates) alongside PRRC clinical boundaries.
 
 ## Data Source Terms & Legal Compliance
 
