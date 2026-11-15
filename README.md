@@ -1,3 +1,5 @@
+> **📦 Archived & Consolidated Notice:** This repository has been **merged into [`medtech-regulatory-compliance-suite`](https://github.com/kaledbouchagraoui7-bot/medtech-regulatory-compliance-suite)** under the dedicated `pms_monitor/` module (`57+` combined `pytest` tests). All openFDA MAUDE & ClinicalTrials.gov surveillance code, case studies, and tests remain preserved there while this repository stays archived so existing links never 404.
+
 <div align="center">
   <img src="assets/sentinel_logo_full.png" alt="Sentinel — ClinicalTrials.gov & OpenFDA PMS Monitor" width="760" />
 </div>
